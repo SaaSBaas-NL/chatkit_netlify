@@ -3,44 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <title>ChatKit Netlify POC</title>
-  <script src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js"></script>
 </head>
 <body>
   <h2>ChatKit POC (Netlify)</h2>
-
   <button id="open">Open chat</button>
   <div id="chat" style="width:360px;height:520px;border:1px solid #ccc;margin-top:10px"></div>
 
- <script>
-  document.getElementById('open').onclick = async () => {
-    if (!window.ChatKit) {
-      alert("ChatKit library is nog niet geladen");
-      return;
-    }
+  <script type="module">
+    import { mountChat } from "https://cdn.jsdelivr.net/npm/@openai/chatkit-web/dist/chatkit.js";
 
-    const res = await fetch('/.netlify/functions/session', {
-      method: 'POST'
-    });
+    document.getElementById("open").onclick = async () => {
+      const res = await fetch("/.netlify/functions/session", {
+        method: "POST"
+      });
 
-    const data = await res.json();
-    console.log("Session response:", data);
+      const data = await res.json();
+      console.log("Session response:", data);
 
-    const clientSecret =
-      data.client_secret ||
-      data.clientSecret ||
-      data.client?.secret;
+      const clientSecret =
+        data.client_secret ||
+        data.clientSecret ||
+        data.client?.secret;
 
-    if (!clientSecret) {
-      alert("Geen client secret ontvangen");
-      return;
-    }
+      if (!clientSecret) {
+        alert("Geen client secret ontvangen");
+        return;
+      }
 
-    ChatKit.mount({
-      element: document.getElementById('chat'),
-      clientSecret
-    });
-  };
-</script>
-
+      mountChat({
+        element: document.getElementById("chat"),
+        clientSecret
+      });
+    };
+  </script>
 </body>
 </html>
