@@ -1,6 +1,6 @@
-export default async (req) => {
-  if (req.method !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
+export default async (request) => {
+  if (request.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405 });
   }
 
   const response = await fetch("https://api.openai.com/v1/chatkit/sessions", {
@@ -11,14 +11,18 @@ export default async (req) => {
     },
     body: JSON.stringify({
       user: "demo-user",
-      workflow: { id: process.env.CHATKIT_WORKFLOW_ID }
+      workflow: {
+        id: process.env.CHATKIT_WORKFLOW_ID
+      }
     })
   });
 
   const data = await response.json();
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(data)
-  };
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
 };
