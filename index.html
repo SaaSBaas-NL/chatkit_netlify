@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <title>ChatKit Netlify POC</title>
+  <script src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js" async></script>
+</head>
+<body>
+  <h2>ChatKit POC (Netlify)</h2>
+
+  <button id="open">Open chat</button>
+  <div id="chat" style="width:360px;height:520px;border:1px solid #ccc;margin-top:10px"></div>
+
+  <script>
+    document.getElementById('open').onclick = async () => {
+      const res = await fetch('/.netlify/functions/session', { method: 'POST' });
+      const data = await res.json();
+
+      ChatKit.mount({
+        element: document.getElementById('chat'),
+        clientSecret: data.client_secret
+      });
+    };
+  </script>
+</body>
+</html>
